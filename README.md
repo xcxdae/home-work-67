@@ -123,18 +123,30 @@ taskkill /PID <PID_NUMBER> /F
 
 ## 📚 API Endpoints
 
-| Метод  | URL                            | Опис                                         | Приклад                                                                        |
-| ------ | ------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------ |
-| GET    | `/api/users`                   | Отримати всіх користувачів                   | `curl http://localhost:4000/api/users`                                         |
-| GET    | `/api/users?fields=name,email` | Отримати користувачів з проекцією            | `curl "http://localhost:4000/api/users?fields=name,email,age"`                 |
-| GET    | `/api/users/:id`               | Отримати користувача за ID                   | `curl http://localhost:4000/api/users/507f1f77bcf86cd799439011`                |
-| POST   | `/api/users`                   | Додати нового користувача (insertOne)        | `curl -X POST http://localhost:4000/api/users`                                 |
-| POST   | `/api/users/bulk`              | Додати декількох користувачів (insertMany)   | `curl -X POST http://localhost:4000/api/users/bulk`                            |
-| PUT    | `/api/users/:id`               | Оновити користувача (updateOne)              | `curl -X PUT http://localhost:4000/api/users/507f1f77bcf86cd799439011`         |
-| PUT    | `/api/users`                   | Оновити декількох користувачів (updateMany)  | `curl -X PUT http://localhost:4000/api/users`                                  |
-| PUT    | `/api/users/:id/replace`       | Замінити користувача (replaceOne)            | `curl -X PUT http://localhost:4000/api/users/507f1f77bcf86cd799439011/replace` |
-| DELETE | `/api/users/:id`               | Видалити користувача (deleteOne)             | `curl -X DELETE http://localhost:4000/api/users/507f1f77bcf86cd799439011`      |
-| DELETE | `/api/users`                   | Видалити декількох користувачів (deleteMany) | `curl -X DELETE http://localhost:4000/api/users`                               |
+| Метод  | URL                            | Опис                                          | Приклад                                                                                    |
+| ------ | ------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| POST   | `/api/register`                | Реєстрація користувача                        | `curl -X POST http://localhost:4000/api/register`                                          |
+| POST   | `/api/login`                   | Вхід користувача                              | `curl -X POST http://localhost:4000/api/login`                                             |
+| GET    | `/api/users`                   | Отримати всіх користувачів                    | `curl http://localhost:4000/api/users`                                                     |
+| GET    | `/api/users?fields=name,email` | Отримати користувачів з проекцією             | `curl "http://localhost:4000/api/users?fields=name,email,age"`                             |
+| GET    | `/api/users/:id`               | Отримати користувача за ID                    | `curl http://localhost:4000/api/users/507f1f77bcf86cd799439011`                            |
+| POST   | `/api/users`                   | Додати нового користувача (insertOne)         | `curl -X POST http://localhost:4000/api/users`                                             |
+| POST   | `/api/users/bulk`              | Додати декількох користувачів (insertMany)    | `curl -X POST http://localhost:4000/api/users/bulk`                                        |
+| PUT    | `/api/users/:id`               | Оновити користувача (updateOne)               | `curl -X PUT http://localhost:4000/api/users/507f1f77bcf86cd799439011`                     |
+| PUT    | `/api/users`                   | Оновити декількох користувачів (updateMany)   | `curl -X PUT http://localhost:4000/api/users`                                              |
+| PUT    | `/api/users/:id/replace`       | Замінити користувача (replaceOne)             | `curl -X PUT http://localhost:4000/api/users/507f1f77bcf86cd799439011/replace`             |
+| DELETE | `/api/users/:id`               | Видалити користувача (deleteOne)              | `curl -X DELETE http://localhost:4000/api/users/507f1f77bcf86cd799439011`                  |
+| DELETE | `/api/users`                   | Видалити декількох користувачів (deleteMany)  | `curl -X DELETE http://localhost:4000/api/users`                                           |
+| GET    | `/api/users/cursor/count`      | Підрахувати активних користувачів з курсором  | `curl http://localhost:4000/api/users/cursor/count`                                        |
+| GET    | `/api/users/stats`             | Отримати статистику користувачів (агрегація)  | `curl http://localhost:4000/api/users/stats`                                               |
+| GET    | `/api/posts`                   | Отримати всі пости (авторизований)            | `curl -H "Authorization: Bearer <token>" http://localhost:4000/api/posts`                  |
+| GET    | `/api/posts/:id`               | Отримати пост за ID (авторизований)           | `curl -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/123`              |
+| POST   | `/api/posts`                   | Створити пост (авторизований)                 | `curl -X POST -H "Authorization: Bearer <token>" http://localhost:4000/api/posts`          |
+| PUT    | `/api/posts/:id`               | Оновити пост (авторизований)                  | `curl -X PUT -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/123`       |
+| DELETE | `/api/posts/:id`               | Видалити пост (авторизований)                 | `curl -X DELETE -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/123`    |
+| POST   | `/api/posts/:id/like`          | Лайкнути пост (авторизований)                 | `curl -X POST -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/123/like` |
+| GET    | `/api/posts/cursor/count`      | Підрахувати постів з курсором (авторизований) | `curl -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/cursor/count`     |
+| GET    | `/api/posts/stats`             | Статистика постів (агрегація, авторизований)  | `curl -H "Authorization: Bearer <token>" http://localhost:4000/api/posts/stats`            |
 
 ## 📝 Приклади запитів
 
@@ -344,6 +356,218 @@ curl -X DELETE http://localhost:4000/api/users \
 }
 ```
 
+### Підрахувати активних користувачів з використанням курсора (GET):
+
+```bash
+curl http://localhost:4000/api/users/cursor/count
+```
+
+**Опис:** Цей маршрут використовує курсор MongoDB для ітерації по документах без завантаження всіх даних в пам'ять. Це ефективно для великих обсягів даних, оскільки дозволяє обробляти документи по одному.
+
+**Логіка роботи:**
+
+- Створюється курсор для пошуку всіх активних користувачів (`{ active: true }`)
+- Використовується `cursor.forEach()` для ітерації по кожному документу
+- Підраховується кількість документів без зберігання їх в масиві
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Кількість активних користувачів підрахована з використанням курсора",
+  "data": {
+    "activeUsersCount": 15
+  }
+}
+```
+
+### Отримати статистику користувачів (GET aggregation):
+
+```bash
+curl http://localhost:4000/api/users/stats
+```
+
+**Опис:** Цей маршрут використовує агрегаційний pipeline MongoDB для збору складних статистичних даних з колекції користувачів.
+
+**Логіка роботи:**
+
+- `$match`: Фільтрує тільки активних користувачів
+- `$group`: Групує всі документи в одну групу і обчислює статистичні показники:
+  - `totalUsers`: Загальна кількість активних користувачів
+  - `averageAge`: Середній вік
+  - `minAge`: Мінімальний вік
+  - `maxAge`: Максимальний вік
+  - `cities`: Унікальні міста (використовується `$addToSet`)
+  - `cityCount`: Кількість користувачів з вказаним містом
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Статистика активних користувачів",
+  "data": {
+    "totalUsers": 15,
+    "averageAge": 28.5,
+    "minAge": 18,
+    "maxAge": 65,
+    "cityCount": 12,
+    "uniqueCities": 8
+  }
+}
+```
+
+### Реєстрація користувача (POST):
+
+```bash
+curl -X POST http://localhost:4000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Іван Петренко",
+    "email": "ivan@example.com",
+    "password": "securepassword123",
+    "age": 25,
+    "city": "Київ"
+  }'
+```
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Користувач успішно зареєстрований",
+  "data": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "Іван Петренко",
+    "email": "ivan@example.com",
+    "age": 25,
+    "city": "Київ",
+    "active": true,
+    "createdAt": "2024-04-06T10:30:00.000Z",
+    "updatedAt": "2024-04-06T10:30:00.000Z"
+  }
+}
+```
+
+### Вхід користувача (POST):
+
+```bash
+curl -X POST http://localhost:4000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "ivan@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Успішний вхід",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "Іван Петренко",
+      "email": "ivan@example.com",
+      "age": 25,
+      "city": "Київ"
+    }
+  }
+}
+```
+
+### Створити пост (POST, авторизований):
+
+```bash
+curl -X POST http://localhost:4000/api/posts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "title": "Мій перший пост",
+    "content": "Це зміст мого поста...",
+    "tags": ["технології", "програмування"]
+  }'
+```
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Пост успішно створений",
+  "data": {
+    "_id": "507f1f77bcf86cd799439012",
+    "title": "Мій перший пост",
+    "content": "Це зміст мого поста...",
+    "author": "507f1f77bcf86cd799439011",
+    "tags": ["технології", "програмування"],
+    "likes": [],
+    "published": true,
+    "createdAt": "2024-04-06T11:00:00.000Z",
+    "updatedAt": "2024-04-06T11:00:00.000Z"
+  }
+}
+```
+
+### Отримати всі пости (GET, авторизований):
+
+```bash
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  http://localhost:4000/api/posts
+```
+
+### Лайкнути пост (POST, авторизований):
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  http://localhost:4000/api/posts/507f1f77bcf86cd799439012/like
+```
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Пост лайкнуто"
+}
+```
+
+### Статистика постів (GET, авторизований):
+
+```bash
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  http://localhost:4000/api/posts/stats
+```
+
+**Опис:** Цей маршрут використовує агрегаційний pipeline для збору статистичних даних про пости.
+
+**Логіка роботи:**
+
+- `$match`: Фільтрує опубліковані пости
+- `$group`: Збирає загальну статистику
+- `$project`: Обробляє масиви тегів для підрахунку унікальних
+
+**Відповідь:**
+
+```json
+{
+  "success": true,
+  "message": "Статистика опублікованих постів",
+  "data": {
+    "totalPosts": 10,
+    "totalLikes": 45,
+    "averageLikes": 4.5,
+    "uniqueTags": 15
+  }
+}
+```
+
 ## 📂 Структура проекту
 
 ```
@@ -377,11 +601,19 @@ curl -X DELETE http://localhost:4000/api/users \
 - ✅ Обробка помилок
 - ✅ CORS підтримка
 - ✅ Відокремлені файли структури (HTML, CSS, JS)
+- ✅ **Використання курсорів для ефективної обробки даних (GET /api/users/cursor/count)**
+- ✅ **Агрегаційні запити для статистичних даних (GET /api/users/stats)**
+- ✅ **JWT аутентифікація (реєстрація, вхід)**
+- ✅ **Управління постами користувачів (CRUD операції)**
+- ✅ **Система лайків для постів**
+- ✅ **Курсори та агрегація для постів (GET /api/posts/cursor/count, GET /api/posts/stats)**
 
 ## 🏗️ Використані технології
 
 - **Backend:** Node.js + Express.js
 - **Database:** MongoDB Atlas + MongoDB Node.js Driver
+- **Authentication:** JWT (JSON Web Tokens) + Passport.js
+- **Security:** bcryptjs для хешування паролів
 - **Frontend:** HTML5 + CSS3 + Vanilla JavaScript
 - **Utilities:** dotenv, cors, nodemon
 
@@ -392,6 +624,8 @@ curl -X DELETE http://localhost:4000/api/users \
 - Додайте в Network Access тільки необхідні IP адреси
 - Валідуйте всі вхідні дані на сервері
 - Використовуйте HTTPS в production
+- **JWT токени:** Зберігайте токени securely, вони мають термін дії 24 години
+- **Паролі:** Хешуються з bcryptjs, ніколи не зберігаються в відкритому вигляді
 
 ## 🐛 Усунення неполадок
 

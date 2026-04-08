@@ -1,32 +1,29 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  name: {
+const postSchema = new mongoose.Schema({
+  title: {
     type: String,
     required: true,
     trim: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-  },
-  password: {
+  content: {
     type: String,
     required: true,
   },
-  age: {
-    type: Number,
-    min: 0,
-    max: 120,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  city: {
+  tags: [{
     type: String,
     trim: true,
-  },
-  avatar: String,
-  active: {
+  }],
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  published: {
     type: Boolean,
     default: true,
   },
@@ -40,9 +37,9 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", function (next) {
+postSchema.pre("save", function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Post", postSchema);
